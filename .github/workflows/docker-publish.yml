@@ -1,11 +1,12 @@
 name: Build and Push Docker Image
+
 on:
-  workflow_dispatch: {}   # 允许在 Actions 里手动运行
+  workflow_dispatch: {}
   push:
-分支:
+    branches:
       - master
       - main
-标签:
+    tags:
       - "v*"
 
 env:
@@ -40,7 +41,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-标签: |
+          tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -54,7 +55,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-标签: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
